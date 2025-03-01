@@ -1,7 +1,5 @@
 ﻿using API_Abstract;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
 using Web_API.Models;
 
 namespace Web_API.Controllers;
@@ -46,31 +44,31 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPost]
-    public async Task<IResult> PostProjectAsync([FromBody]string name, [FromBody]string? description)
+    public async Task<IResult> PostProjectAsync([FromBody] Project project)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(project.Name))
         {
             return Results.UnprocessableEntity("Field name is null or empty");
         }
 
-        IProject project = await _projectManager.CreateProjectAsync(name, description);
-        return Results.Created($"/api/projects/{project.Id}", project);
+        IProject rezult = await _projectManager.CreateProjectAsync(project.Name, project.Description);
+        return Results.Created($"/api/projects/{rezult.Id}", rezult);
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> PutProjectAsync(int id, [FromBody] string? name, [FromBody] string? description)
+    public async Task<IResult> PutProjectAsync(int id, [FromBody] Project project)
     {
-        if (!IsValidUpdateEntity(name, description))
+        if (!IsValidUpdateEntity(project.Name, project.Description))
         {
             return Results.UnprocessableEntity("Wrong fields value for update");
         }
 
-        IProject? project = await _projectManager.UpdateProjectAsync(id, name, description);
-        if (project is null)
+        IProject? rezult = await _projectManager.UpdateProjectAsync(id, project.Name, project.Description);
+        if (rezult is null)
         {
             return Results.BadRequest("Wrong project Id");
         }
-        return Results.Ok(project);
+        return Results.Ok(rezult);
     }
 
     [HttpDelete("{id}")]
