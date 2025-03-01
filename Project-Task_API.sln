@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web_API", "Web_API\Web_API.csproj", "{99E6A423-5191-427E-8B52-D699F3827BFA}"
 EndProject
@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 		README.md = README.md
 		Тестовое задание на разработку.md = Тестовое задание на разработку.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Abstract", "API_Abstract\API_Abstract.csproj", "{C434531E-596C-406F-A12A-C0BE603E79CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{99E6A423-5191-427E-8B52-D699F3827BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99E6A423-5191-427E-8B52-D699F3827BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99E6A423-5191-427E-8B52-D699F3827BFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C434531E-596C-406F-A12A-C0BE603E79CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C434531E-596C-406F-A12A-C0BE603E79CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C434531E-596C-406F-A12A-C0BE603E79CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C434531E-596C-406F-A12A-C0BE603E79CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
