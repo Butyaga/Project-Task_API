@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Abstract", "API_Abstract\API_Abstract.csproj", "{C434531E-596C-406F-A12A-C0BE603E79CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BD_Manager", "BD_Manager\BD_Manager.csproj", "{1DE02AB5-CA49-409A-BA10-53BD12DB27BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C434531E-596C-406F-A12A-C0BE603E79CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C434531E-596C-406F-A12A-C0BE603E79CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C434531E-596C-406F-A12A-C0BE603E79CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DE02AB5-CA49-409A-BA10-53BD12DB27BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DE02AB5-CA49-409A-BA10-53BD12DB27BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DE02AB5-CA49-409A-BA10-53BD12DB27BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DE02AB5-CA49-409A-BA10-53BD12DB27BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
