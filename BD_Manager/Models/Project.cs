@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BD_Manager.Models;
+namespace DB_Manager.Models;
 
 public class Project : IProject
 {

@@ -1,8 +1,8 @@
-﻿using BD_Manager.Models;
+﻿using DB_Manager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BD_Manager.DBCntxt;
+namespace DB_Manager.DBCntxt;
 public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 {
     public void Configure(EntityTypeBuilder<Project> builder)

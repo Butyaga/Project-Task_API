@@ -1,7 +1,7 @@
-﻿using BD_Manager.Models;
+﻿using DB_Manager.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BD_Manager.DBCntxt;
+namespace DB_Manager.DBCntxt;
 public class PgSQLContext : DbContext
 {
     public DbSet<Project> Projects { get; set; }
