@@ -45,7 +45,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPost]
-    public async Task<IResult> PostProjectAsync([FromBody] Project project)
+    public async Task<IResult> PostProjectAsync([FromBody] ProjectDTO project)
     {
         if (string.IsNullOrWhiteSpace(project.Name))
         {
@@ -61,7 +61,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> PutProjectAsync(int id, [FromBody] Project project)
+    public async Task<IResult> PutProjectAsync(int id, [FromBody] ProjectDTO project)
     {
         if (!IsValidUpdateEntity(project.Name, project.Description))
         {
