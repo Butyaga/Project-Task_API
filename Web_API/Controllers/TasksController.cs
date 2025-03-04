@@ -62,7 +62,7 @@ namespace Web_API.Controllers
             try
             {
                 ITaskPOCO result = await _taskManager.CreateTaskAsync(taskDTO);
-                return Ok(result);
+                return CreatedAtAction(nameof(GetTaskAsync), result.Id, result);
             }
             catch (Exception)
             {
@@ -110,7 +110,7 @@ namespace Web_API.Controllers
                 bool result = await _taskManager.DeleteTaskAsync(id);
                 if (result)
                 {
-                    return NoContent();
+                    return Ok();
                 }
                 return NotFound(new { message = $"No task found with Id {id}" });
             }
