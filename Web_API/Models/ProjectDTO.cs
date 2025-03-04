@@ -1,7 +1,9 @@
-﻿namespace Web_API.Models;
-public class ProjectDTO
-{
-    public string Name { get; set; } = string.Empty;
+﻿using API_Abstract.DTO;
 
-    public string? Description { get; set; }
+namespace Web_API.Models;
+public class ProjectDTO : IProjectDTO
+{
+    public string name { get; set; } = string.Empty;
+
+    public string? description { get; set; }
 }

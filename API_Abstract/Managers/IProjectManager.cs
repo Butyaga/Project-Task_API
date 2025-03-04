@@ -1,4 +1,5 @@
-﻿using API_Abstract.POCO;
+﻿using API_Abstract.DTO;
+using API_Abstract.POCO;
 
 namespace API_Abstract.Managers;
 public interface IProjectManager
@@ -6,7 +7,7 @@ public interface IProjectManager
     Task<IEnumerable<IProjectPOCO>> GetProjectsAsync();
     Task<IEnumerable<IProjectPOCO>> GetPagedProjectsAsync(int pageIndex, int pageSize);
     Task<IProjectPOCO?> GetProjectAsync(int Id);
-    Task<IProjectPOCO?> CreateProjectAsync(string name, string? description);
-    Task<IProjectPOCO?> UpdateProjectAsync(int Id, string? name, string? description);
+    Task<IProjectPOCO> CreateProjectAsync(IProjectDTO projectDTO);
+    Task<bool> UpdateProjectAsync(int Id, IProjectDTO projectDTO);
     Task<bool> DeleteProjectAsync(int Id);
 }

@@ -1,4 +1,5 @@
-﻿using API_Abstract.Managers;
+﻿using API_Abstract.DTO;
+using API_Abstract.Managers;
 using API_Abstract.POCO;
 using DB_Manager.DBCntxt;
 using DB_Manager.Models;
@@ -7,14 +8,14 @@ using Microsoft.EntityFrameworkCore;
 namespace DB_Manager.Managers;
 class ProjectManager(PgSQLContext _context) : IProjectManager
 {
-    public async Task<IProjectPOCO?> CreateProjectAsync(string name, string? description)
+    public async Task<IProjectPOCO> CreateProjectAsync(IProjectDTO projectDTO)
     {
-        Project newProject = new() { Name = name, Description = description };
+        Project newProject = new() { Name = projectDTO.name, Description = projectDTO.description };
         await _context.Projects.AddAsync(newProject);
-        int rezult = await _context.SaveChangesAsync();
-        if (rezult == 0)
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
         {
-            return null;
+            throw new Exception("Project creation error in DB");
         }
         return newProject;
     }
@@ -29,7 +30,11 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         }
 
         _context.Projects.Remove(project);
-        await _context.SaveChangesAsync();
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new Exception("Project creation error in DB");
+        }
         return true;
     }
 
@@ -57,24 +62,22 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         return await _context.Projects.ToListAsync();
     }
 
-    public async Task<IProjectPOCO?> UpdateProjectAsync(int Id, string? name, string? description)
+    public async Task<bool> UpdateProjectAsync(int Id, IProjectDTO projectDTO)
     {
         Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == Id);
         if (project is null)
         {
-            return null;
+            return false;
         }
 
-        if (name is not null)
-        {
-            project.Name = name;
-        }
-        if (description is not null)
-        {
-            project.Description = description;
-        }
+        project.Name = projectDTO.name;
+        project.Description = projectDTO.description;
 
-        await _context.SaveChangesAsync();
-        return project;
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new Exception("Project update error in DB");
+        }
+        return true;
     }
 }

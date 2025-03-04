@@ -1,5 +1,5 @@
-﻿using API_Abstract.Managers;
-using API_Abstract.POCO;
+﻿using API_Abstract.POCO;
+using API_Abstract.Managers;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
 
@@ -10,102 +10,120 @@ namespace Web_API.Controllers;
 public class ProjectsController(IProjectManager _projectManager) : ControllerBase
 {
     [HttpGet()]
-    public async Task<IResult> GetProgectsAsync([FromQuery]int page = 0, [FromQuery]int pageSize = 0)
+    public async Task<ActionResult<IEnumerable<IProjectPOCO>>> GetProjectsAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
     {
         if (pageSize < 0 || page < -1)
         {
-            return Results.BadRequest("Wrong parameter values: page, pageSize");
+            return BadRequest(new Message("Wrong parameter values: page, pageSize"));
         }
 
-        IEnumerable<IProjectPOCO> projects;
-        if (pageSize == 0)
+        try
         {
-            projects = await _projectManager.GetProjectsAsync();
-        } else
-        {
-            projects = await _projectManager.GetPagedProjectsAsync(page, pageSize);
+            IEnumerable<IProjectPOCO> projects;
+            if (pageSize == 0)
+            {
+                projects = await _projectManager.GetProjectsAsync();
+            }
+            else
+            {
+                projects = await _projectManager.GetPagedProjectsAsync(page, pageSize);
+            }
+            return Ok(projects);
         }
-        return Results.Ok(projects);
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpGet("{id}")]
-    public async Task<IResult> GetProgectAsync(int id)
+    public async Task<ActionResult<IProjectPOCO>> GetProjectAsync(int id)
     {
         if (id < 1)
         {
-            return Results.BadRequest("Wrong parameters value: id");
+            return BadRequest(new Message("Wrong parameters value: id"));
         }
 
-        IProjectPOCO? project = await _projectManager.GetProjectAsync(id);
-        if (project is null)
+        try
         {
-            return Results.BadRequest("Wrong project Id");
+            IProjectPOCO? project = await _projectManager.GetProjectAsync(id);
+            if (project is null)
+            {
+                return NotFound(new Message($"No project found with Id {id}"));
+            }
+            return Ok(project);
         }
-        return Results.Ok(project);
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpPost]
-    public async Task<IResult> PostProjectAsync([FromBody] ProjectDTO project)
+    public async Task<ActionResult<IProjectPOCO>> PostProjectAsync([FromBody] ProjectDTO project)
     {
-        if (string.IsNullOrWhiteSpace(project.Name))
-        {
-            return Results.UnprocessableEntity("Field name is null or empty");
-        }
+        // Check model
+        //
+        //
 
-        IProjectPOCO? rezult = await _projectManager.CreateProjectAsync(project.Name, project.Description);
-        if (rezult is null)
+        try
         {
-            return Results.UnprocessableEntity();
+            IProjectPOCO result = await _projectManager.CreateProjectAsync(project);
+            return CreatedAtAction(nameof(GetProjectAsync), result.Id, result);
         }
-        return Results.Created($"/api/projects/{rezult.Id}", rezult);
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> PutProjectAsync(int id, [FromBody] ProjectDTO project)
+    public async Task<ActionResult> PutProjectAsync(int id, [FromBody] ProjectDTO project)
     {
-        if (!IsValidUpdateEntity(project.Name, project.Description))
+        if (id < 0)
         {
-            return Results.UnprocessableEntity("Wrong fields value for update");
+            return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        IProjectPOCO? rezult = await _projectManager.UpdateProjectAsync(id, project.Name, project.Description);
-        if (rezult is null)
+        // Check model
+        //
+        //
+
+        try
         {
-            return Results.BadRequest("Wrong project Id");
+            bool result = await _projectManager.UpdateProjectAsync(id, project);
+            if (result)
+            {
+                return NoContent();
+            }
+            return NotFound(new Message($"No project found with Id {id}"));
         }
-        return Results.Ok(rezult);
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpDelete("{id}")]
-    public async Task<IResult> DeleteProjectAsync(int id)
+    public async Task<ActionResult> DeleteProjectAsync(int id)
     {
-        if (id < 1)
+        if (id < 0)
         {
-            return Results.BadRequest("Wrong parameters value: id");
+            return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        bool deleteResult = await _projectManager.DeleteProjectAsync(id);
-        if (deleteResult)
+        try
         {
-            return Results.Ok();
+            bool result = await _projectManager.DeleteProjectAsync(id);
+            if (result)
+            {
+                return Ok();
+            }
+            return NotFound(new Message($"No project found with Id {id}"));
         }
-        return Results.NotFound("Not found project id");
-    }
-
-    private static bool IsValidUpdateEntity(string? name, string? description)
-    {
-        // Пустое поле имени проекта
-        if (name?.Trim() == "")
+        catch (Exception)
         {
-            return false;
+            return StatusCode(500, "Internal server error");
         }
-
-        // Отсутствие полей для обновления
-        if (name is null && description is null)
-        {
-            return false;
-        }
-
-        return true;
     }
 }
