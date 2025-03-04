@@ -2,6 +2,8 @@
 using API_Abstract.Managers;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Web_API.Controllers;
 
@@ -53,11 +55,13 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ITaskPOCO>> PostTaskAsync([FromBody] TaskDTO taskDTO)
+    public async Task<ActionResult<ITaskPOCO>> PostTaskAsync([FromBody] TaskDTO taskDTO, IValidator<TaskDTO> validator)
     {
-        // Check model
-        //
-        //
+        ValidationResult validationResult = validator.Validate(taskDTO);
+        if (!validationResult.IsValid)
+        {
+            return StatusCode(422, "TaskDTO is not valid");
+        }
 
         try
         {
@@ -71,16 +75,18 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutTaskAsync(int id, [FromBody] TaskDTO taskDTO)
+    public async Task<ActionResult> PutTaskAsync(int id, [FromBody] TaskDTO taskDTO, IValidator<TaskDTO> validator)
     {
         if (id < 0)
         {
             return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        // Check model
-        //
-        //
+        ValidationResult validationResult = validator.Validate(taskDTO);
+        if (!validationResult.IsValid)
+        {
+            return StatusCode(422, "TaskDTO is not valid");
+        }
 
         try
         {

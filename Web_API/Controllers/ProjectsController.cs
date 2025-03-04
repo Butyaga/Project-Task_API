@@ -2,6 +2,8 @@
 using API_Abstract.Managers;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Web_API.Controllers;
 
@@ -60,11 +62,13 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPost]
-    public async Task<ActionResult<IProjectPOCO>> PostProjectAsync([FromBody] ProjectDTO project)
+    public async Task<ActionResult<IProjectPOCO>> PostProjectAsync([FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
     {
-        // Check model
-        //
-        //
+        ValidationResult validationResult = validator.Validate(project);
+        if (!validationResult.IsValid)
+        {
+            return StatusCode(422, "ProjectDTO is not valid");
+        }
 
         try
         {
@@ -78,16 +82,18 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutProjectAsync(int id, [FromBody] ProjectDTO project)
+    public async Task<ActionResult> PutProjectAsync(int id, [FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
     {
         if (id < 0)
         {
             return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        // Check model
-        //
-        //
+        ValidationResult validationResult = validator.Validate(project);
+        if (!validationResult.IsValid)
+        {
+            return StatusCode(422, "ProjectDTO is not valid");
+        }
 
         try
         {
