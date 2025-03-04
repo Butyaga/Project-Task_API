@@ -1,4 +1,5 @@
-﻿using API_Abstract;
+﻿using API_Abstract.Managers;
+using API_Abstract.POCO;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
 
@@ -16,7 +17,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
             return Results.BadRequest("Wrong parameter values: page, pageSize");
         }
 
-        IEnumerable<IProject> projects;
+        IEnumerable<IProjectPOCO> projects;
         if (pageSize == 0)
         {
             projects = await _projectManager.GetProjectsAsync();
@@ -35,7 +36,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
             return Results.BadRequest("Wrong parameters value: id");
         }
 
-        IProject? project = await _projectManager.GetProjectAsync(id);
+        IProjectPOCO? project = await _projectManager.GetProjectAsync(id);
         if (project is null)
         {
             return Results.BadRequest("Wrong project Id");
@@ -51,7 +52,11 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
             return Results.UnprocessableEntity("Field name is null or empty");
         }
 
-        IProject rezult = await _projectManager.CreateProjectAsync(project.Name, project.Description);
+        IProjectPOCO? rezult = await _projectManager.CreateProjectAsync(project.Name, project.Description);
+        if (rezult is null)
+        {
+            return Results.UnprocessableEntity();
+        }
         return Results.Created($"/api/projects/{rezult.Id}", rezult);
     }
 
@@ -63,7 +68,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
             return Results.UnprocessableEntity("Wrong fields value for update");
         }
 
-        IProject? rezult = await _projectManager.UpdateProjectAsync(id, project.Name, project.Description);
+        IProjectPOCO? rezult = await _projectManager.UpdateProjectAsync(id, project.Name, project.Description);
         if (rezult is null)
         {
             return Results.BadRequest("Wrong project Id");

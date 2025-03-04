@@ -1,17 +1,13 @@
-﻿using API_Abstract;
+﻿using API_Abstract.Managers;
+using API_Abstract.POCO;
 using DB_Manager.DBCntxt;
 using DB_Manager.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DB_Manager.Managers;
 class ProjectManager(PgSQLContext _context) : IProjectManager
 {
-    public async Task<IProject?> CreateProjectAsync(string name, string? description)
+    public async Task<IProjectPOCO?> CreateProjectAsync(string name, string? description)
     {
         Project newProject = new() { Name = name, Description = description };
         await _context.Projects.AddAsync(newProject);
@@ -37,14 +33,14 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         return true;
     }
 
-    public async Task<IEnumerable<IProject>> GetPagedProjectsAsync(int pageIndex, int pageSize)
+    public async Task<IEnumerable<IProjectPOCO>> GetPagedProjectsAsync(int pageIndex, int pageSize)
     {
         int countScipedPeges = pageIndex * pageSize;
         IQueryable<Project> page = _context.Projects.Skip(countScipedPeges).Take(pageSize);
         return await page.ToListAsync();
     }
 
-    public async Task<IProject?> GetProjectAsync(int Id)
+    public async Task<IProjectPOCO?> GetProjectAsync(int Id)
     {
         Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == Id);
 
@@ -56,12 +52,12 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         return project;
     }
 
-    public async Task<IEnumerable<IProject>> GetProjectsAsync()
+    public async Task<IEnumerable<IProjectPOCO>> GetProjectsAsync()
     {
         return await _context.Projects.ToListAsync();
     }
 
-    public async Task<IProject?> UpdateProjectAsync(int Id, string? name, string? description)
+    public async Task<IProjectPOCO?> UpdateProjectAsync(int Id, string? name, string? description)
     {
         Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == Id);
         if (project is null)

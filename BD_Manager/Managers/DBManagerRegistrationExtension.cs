@@ -1,9 +1,9 @@
 ﻿using DB_Manager.DBCntxt;
 using DB_Manager.Models;
-using API_Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using API_Abstract.Managers;
 
 namespace DB_Manager.Managers
 {
