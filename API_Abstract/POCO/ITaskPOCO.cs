@@ -8,5 +8,4 @@ public interface ITaskPOCO
     DateTime CreatedAt { get; }
     DateTime UpdatedAt { get; }
     int ProjectId { get; }
-    //Project(навигационное свойство для связи с проектом, тип Project).
 }

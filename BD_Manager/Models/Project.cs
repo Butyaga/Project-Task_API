@@ -1,13 +1,5 @@
-﻿using API_Abstract.POCO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DB_Manager.Models;
-
-public class Project : IProjectPOCO
+﻿namespace DB_Manager.Models;
+public class Project
 {
     public int Id { get; set; }
 
@@ -17,5 +9,5 @@ public class Project : IProjectPOCO
 
     public DateTime CreatedAt { get; set; }
 
-    public IEnumerable<ITaskPOCO> Tasks { get; set; } = [];
+    public List<ProjectTask> Tasks { get; set; } = [];
 }
