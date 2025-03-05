@@ -1,5 +1,7 @@
-﻿namespace DB_Manager.Models;
-class ProjectTask
+﻿using API_Abstract.POCO;
+
+namespace DB_Manager.Models.DTO;
+public class ProjectTaskDTO : ITask
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
@@ -8,5 +10,4 @@ class ProjectTask
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public int ProjectId { get; set; }
-    public Project? Project { get; set; }
 }

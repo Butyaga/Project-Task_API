@@ -12,7 +12,7 @@ namespace Web_API.Controllers;
 public class TasksController(ITaskManager _taskManager) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ITaskPOCO>>> GetTasksAsync([FromQuery] bool? isCompleted, [FromQuery] int? projectId)
+    public async Task<ActionResult<IEnumerable<ITask>>> GetTasksAsync([FromQuery] bool? isCompleted, [FromQuery] int? projectId)
     {
         if (projectId.HasValue && projectId.Value < 0)
         {
@@ -21,7 +21,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
 
         try
         {
-            IEnumerable<ITaskPOCO> tasks = await _taskManager.GetTasksAsync(isCompleted, projectId);
+            IEnumerable<ITask> tasks = await _taskManager.GetTasksAsync(isCompleted, projectId);
             return Ok(tasks);
         }
         catch (Exception)
@@ -31,7 +31,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ITaskPOCO>> GetTaskAsync(int id)
+    public async Task<ActionResult<ITask>> GetTaskAsync(int id)
     {
         if (id < 0)
         {
@@ -40,7 +40,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
 
         try
         {
-            ITaskPOCO? task = await _taskManager.GetTaskAsync(id);
+            ITask? task = await _taskManager.GetTaskAsync(id);
             if (task is null)
             {
                 return NotFound(new Message($"No task found with Id {id}"));
@@ -55,7 +55,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ITaskPOCO>> PostTaskAsync([FromBody] TaskDTO taskDTO, IValidator<TaskDTO> validator)
+    public async Task<ActionResult<ITask>> PostTaskAsync([FromBody] TaskDTO taskDTO, IValidator<TaskDTO> validator)
     {
         ValidationResult validationResult = validator.Validate(taskDTO);
         if (!validationResult.IsValid)
@@ -65,7 +65,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
 
         try
         {
-            ITaskPOCO result = await _taskManager.CreateTaskAsync(taskDTO);
+            ITask result = await _taskManager.CreateTaskAsync(taskDTO);
             return CreatedAtAction(nameof(GetTaskAsync), result.Id, result);
         }
         catch (Exception)

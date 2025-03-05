@@ -7,7 +7,7 @@ using API_Abstract.Managers;
 
 namespace DB_Manager.Managers
 {
-    public static class DBManagerRegistrationExtension
+    public static class DBManagersRegistrationExtensions
     {
 
         public static IServiceCollection AddDBManagers(this IServiceCollection services, string connectionString)

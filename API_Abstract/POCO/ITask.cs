@@ -1,5 +1,5 @@
 ﻿namespace API_Abstract.POCO;
-public interface ITaskPOCO
+public interface ITask
 {
     int Id { get; }
     string Title { get; }

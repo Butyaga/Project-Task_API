@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DB_Manager.Managers;
 class ProjectManager(PgSQLContext _context) : IProjectManager
 {
-    public async Task<IProjectPOCO> CreateProjectAsync(IProjectDTO projectDTO)
+    public async Task<IProject> CreateProjectAsync(IProjectDTO projectDTO)
     {
         Project newProject = new() { Name = projectDTO.name, Description = projectDTO.description };
         await _context.Projects.AddAsync(newProject);
@@ -38,14 +38,14 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         return true;
     }
 
-    public async Task<IEnumerable<IProjectPOCO>> GetPagedProjectsAsync(int pageIndex, int pageSize)
+    public async Task<IEnumerable<IProject>> GetPagedProjectsAsync(int pageIndex, int pageSize)
     {
         int countScipedPeges = pageIndex * pageSize;
         IQueryable<Project> page = _context.Projects.Skip(countScipedPeges).Take(pageSize);
         return await page.ToListAsync();
     }
 
-    public async Task<IProjectPOCO?> GetProjectAsync(int Id)
+    public async Task<IProject?> GetProjectAsync(int Id)
     {
         Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == Id);
 
@@ -57,7 +57,7 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         return project;
     }
 
-    public async Task<IEnumerable<IProjectPOCO>> GetProjectsAsync()
+    public async Task<IEnumerable<IProject>> GetProjectsAsync()
     {
         return await _context.Projects.ToListAsync();
     }

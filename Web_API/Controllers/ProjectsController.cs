@@ -12,7 +12,7 @@ namespace Web_API.Controllers;
 public class ProjectsController(IProjectManager _projectManager) : ControllerBase
 {
     [HttpGet()]
-    public async Task<ActionResult<IEnumerable<IProjectPOCO>>> GetProjectsAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
+    public async Task<ActionResult<IEnumerable<IProject>>> GetProjectsAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
     {
         if (pageSize < 0 || page < -1)
         {
@@ -21,7 +21,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
 
         try
         {
-            IEnumerable<IProjectPOCO> projects;
+            IEnumerable<IProject> projects;
             if (pageSize == 0)
             {
                 projects = await _projectManager.GetProjectsAsync();
@@ -39,7 +39,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<IProjectPOCO>> GetProjectAsync(int id)
+    public async Task<ActionResult<IProject>> GetProjectAsync(int id)
     {
         if (id < 1)
         {
@@ -48,7 +48,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
 
         try
         {
-            IProjectPOCO? project = await _projectManager.GetProjectAsync(id);
+            IProject? project = await _projectManager.GetProjectAsync(id);
             if (project is null)
             {
                 return NotFound(new Message($"No project found with Id {id}"));
@@ -62,7 +62,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPost]
-    public async Task<ActionResult<IProjectPOCO>> PostProjectAsync([FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
+    public async Task<ActionResult<IProject>> PostProjectAsync([FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
     {
         ValidationResult validationResult = validator.Validate(project);
         if (!validationResult.IsValid)
@@ -72,7 +72,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
 
         try
         {
-            IProjectPOCO result = await _projectManager.CreateProjectAsync(project);
+            IProject result = await _projectManager.CreateProjectAsync(project);
             return CreatedAtAction(nameof(GetProjectAsync), result.Id, result);
         }
         catch (Exception)
