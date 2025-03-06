@@ -1,4 +1,4 @@
-﻿namespace API_Abstract;
+﻿namespace API_Abstract.POCO;
 public interface IProject
 {
     int Id { get; }

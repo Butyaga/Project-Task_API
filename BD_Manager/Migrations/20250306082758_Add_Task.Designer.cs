@@ -3,6 +3,7 @@ using System;
 using DB_Manager.DBCntxt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DB_Manager.Migrations
 {
     [DbContext(typeof(PgSQLContext))]
-    partial class PgSQLContextModelSnapshot : ModelSnapshot
+    [Migration("20250306082758_Add_Task")]
+    partial class Add_Task
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

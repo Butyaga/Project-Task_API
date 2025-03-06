@@ -1,6 +1,9 @@
-﻿using API_Abstract;
+﻿using API_Abstract.POCO;
+using API_Abstract.Managers;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Web_API.Controllers;
 
@@ -9,98 +12,124 @@ namespace Web_API.Controllers;
 public class ProjectsController(IProjectManager _projectManager) : ControllerBase
 {
     [HttpGet()]
-    public async Task<IResult> GetProgectsAsync([FromQuery]int page = 0, [FromQuery]int pageSize = 0)
+    public async Task<ActionResult<IEnumerable<IProject>>> GetProjectsAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
     {
         if (pageSize < 0 || page < -1)
         {
-            return Results.BadRequest("Wrong parameter values: page, pageSize");
+            return BadRequest(new Message("Wrong parameter values: page, pageSize"));
         }
 
-        IEnumerable<IProject> projects;
-        if (pageSize == 0)
+        try
         {
-            projects = await _projectManager.GetProjectsAsync();
-        } else
-        {
-            projects = await _projectManager.GetPagedProjectsAsync(page, pageSize);
+            IEnumerable<IProject> projects;
+            if (pageSize == 0)
+            {
+                projects = await _projectManager.GetProjectsAsync();
+            }
+            else
+            {
+                projects = await _projectManager.GetPagedProjectsAsync(page, pageSize);
+            }
+            return Ok(projects);
         }
-        return Results.Ok(projects);
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpGet("{id}")]
-    public async Task<IResult> GetProgectAsync(int id)
+    public async Task<ActionResult<IProject>> GetProjectAsync(int id)
     {
         if (id < 1)
         {
-            return Results.BadRequest("Wrong parameters value: id");
+            return BadRequest(new Message("Wrong parameters value: id"));
         }
 
-        IProject? project = await _projectManager.GetProjectAsync(id);
-        if (project is null)
+        try
         {
-            return Results.BadRequest("Wrong project Id");
+            IProject? project = await _projectManager.GetProjectAsync(id);
+            if (project is null)
+            {
+                return NotFound(new Message($"No project found with Id {id}"));
+            }
+            return Ok(project);
         }
-        return Results.Ok(project);
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpPost]
-    public async Task<IResult> PostProjectAsync([FromBody] Project project)
+    public async Task<ActionResult<IProject>> PostProjectAsync([FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
     {
-        if (string.IsNullOrWhiteSpace(project.Name))
+        ValidationResult validationResult = validator.Validate(project);
+        if (!validationResult.IsValid)
         {
-            return Results.UnprocessableEntity("Field name is null or empty");
+            return StatusCode(422, "ProjectDTO is not valid");
         }
 
-        IProject rezult = await _projectManager.CreateProjectAsync(project.Name, project.Description);
-        return Results.Created($"/api/projects/{rezult.Id}", rezult);
+        try
+        {
+            IProject result = await _projectManager.CreateProjectAsync(project);
+            return CreatedAtAction(nameof(GetProjectAsync), result.Id, result);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> PutProjectAsync(int id, [FromBody] Project project)
+    public async Task<ActionResult> PutProjectAsync(int id, [FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
     {
-        if (!IsValidUpdateEntity(project.Name, project.Description))
+        if (id < 0)
         {
-            return Results.UnprocessableEntity("Wrong fields value for update");
+            return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        IProject? rezult = await _projectManager.UpdateProjectAsync(id, project.Name, project.Description);
-        if (rezult is null)
+        ValidationResult validationResult = validator.Validate(project);
+        if (!validationResult.IsValid)
         {
-            return Results.BadRequest("Wrong project Id");
+            return StatusCode(422, "ProjectDTO is not valid");
         }
-        return Results.Ok(rezult);
+
+        try
+        {
+            bool result = await _projectManager.UpdateProjectAsync(id, project);
+            if (result)
+            {
+                return NoContent();
+            }
+            return NotFound(new Message($"No project found with Id {id}"));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     [HttpDelete("{id}")]
-    public async Task<IResult> DeleteProjectAsync(int id)
+    public async Task<ActionResult> DeleteProjectAsync(int id)
     {
-        if (id < 1)
+        if (id < 0)
         {
-            return Results.BadRequest("Wrong parameters value: id");
+            return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        bool deleteResult = await _projectManager.DeleteProjectAsync(id);
-        if (deleteResult)
+        try
         {
-            return Results.Ok();
+            bool result = await _projectManager.DeleteProjectAsync(id);
+            if (result)
+            {
+                return Ok();
+            }
+            return NotFound(new Message($"No project found with Id {id}"));
         }
-        return Results.NotFound("Not found project id");
-    }
-
-    private static bool IsValidUpdateEntity(string? name, string? description)
-    {
-        // Пустое поле имени проекта
-        if (name?.Trim() == "")
+        catch (Exception)
         {
-            return false;
+            return StatusCode(500, "Internal server error");
         }
-
-        // Отсутствие полей для обновления
-        if (name is null && description is null)
-        {
-            return false;
-        }
-
-        return true;
     }
 }

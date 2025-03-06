@@ -1,26 +1,24 @@
-﻿using API_Abstract;
+﻿using API_Abstract.DTO;
+using API_Abstract.Managers;
+using API_Abstract.POCO;
 using DB_Manager.DBCntxt;
 using DB_Manager.Models;
+using DB_Manager.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DB_Manager.Managers;
-class ProjectManager(PgSQLContext _context) : IProjectManager
+public class ProjectManager(PgSQLContext _context) : IProjectManager
 {
-    public async Task<IProject?> CreateProjectAsync(string name, string? description)
+    public async Task<IProject> CreateProjectAsync(IProjectDTO projectDTO)
     {
-        Project newProject = new() { Name = name, Description = description };
+        Project newProject = new() { Name = projectDTO.name, Description = projectDTO.description };
         await _context.Projects.AddAsync(newProject);
-        int rezult = await _context.SaveChangesAsync();
-        if (rezult == 0)
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
         {
-            return null;
+            throw new Exception("Project creation error in DB");
         }
-        return newProject;
+        return newProject.MapToDTO();
     }
 
     public async Task<bool> DeleteProjectAsync(int Id)
@@ -33,52 +31,58 @@ class ProjectManager(PgSQLContext _context) : IProjectManager
         }
 
         _context.Projects.Remove(project);
-        await _context.SaveChangesAsync();
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new Exception("Project creation error in DB");
+        }
         return true;
     }
 
     public async Task<IEnumerable<IProject>> GetPagedProjectsAsync(int pageIndex, int pageSize)
     {
-        int countScipedPeges = pageIndex * pageSize;
-        IQueryable<Project> page = _context.Projects.Skip(countScipedPeges).Take(pageSize);
-        return await page.ToListAsync();
+        int countSkippedItems = pageIndex * pageSize;
+        IQueryable<Project> requestedPageQuery = _context.Projects.AsNoTracking().Skip(countSkippedItems).Take(pageSize);
+        List<Project> projects = await requestedPageQuery.ToListAsync();
+        IEnumerable<IProject> projectCollection = [.. from project in projects select project.MapToDTO()];
+        return projectCollection;
     }
 
     public async Task<IProject?> GetProjectAsync(int Id)
     {
-        Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == Id);
+        Project? project = await _context.Projects.AsNoTracking().Include(p => p.Tasks).FirstOrDefaultAsync(p => p.Id == Id);
 
         if (project is null)
         {
             return null;
         }
 
-        return project;
+        return project.MapToDTO();
     }
 
     public async Task<IEnumerable<IProject>> GetProjectsAsync()
     {
-        return await _context.Projects.ToListAsync();
+        List<Project> projects = await _context.Projects.AsNoTracking().ToListAsync();
+        IEnumerable<IProject> projetsDTO = [.. from project in projects select project.MapToDTO()];
+        return projetsDTO;
     }
 
-    public async Task<IProject?> UpdateProjectAsync(int Id, string? name, string? description)
+    public async Task<bool> UpdateProjectAsync(int Id, IProjectDTO projectDTO)
     {
         Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == Id);
         if (project is null)
         {
-            return null;
+            return false;
         }
 
-        if (name is not null)
-        {
-            project.Name = name;
-        }
-        if (description is not null)
-        {
-            project.Description = description;
-        }
+        project.Name = projectDTO.name;
+        project.Description = projectDTO.description;
 
-        await _context.SaveChangesAsync();
-        return project;
+        int result = await _context.SaveChangesAsync();
+        if (result == 0)
+        {
+            throw new Exception("Project update error in DB");
+        }
+        return true;
     }
 }

@@ -1,8 +1,6 @@
-using DB_Manager.DBCntxt;
 using DB_Manager.Managers;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using Web_API.Models.Validators;
 
 namespace Web_API;
 public class Program
@@ -14,6 +12,7 @@ public class Program
         // Add services to the container.
         string connectionString = GetConnectionString(builder.Configuration);
         builder.Services.AddDBManagers(connectionString);
+        builder.Services.AddValidators();
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
