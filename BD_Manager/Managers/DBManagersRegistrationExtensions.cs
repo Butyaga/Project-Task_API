@@ -19,6 +19,7 @@ namespace DB_Manager.Managers
             });
 
             services.AddScoped<IProjectManager, ProjectManager>();
+            services.AddScoped<ITaskManager, TaskManager>();
 
             return services;
         }
@@ -37,23 +38,55 @@ namespace DB_Manager.Managers
 
         private static async Task SeedingAsync(DbContext context, bool _, CancellationToken cancellationToken)
         {
-            (string, string)[] projects = [ ("Проект 1", "Описание проета 1"),
-                                            ("Проект 2", "Описание проета 2"),
-                                            ("Проект 3", "Описание проета 3") ];
-            foreach (var project in projects)
+            int projectCount = 7;
+            int taskCountPerProject = 3;
+
+            await AddProjects(projectCount, context, cancellationToken);
+            await AddTasks(taskCountPerProject, context, cancellationToken);
+        }
+
+        private static async Task AddProjects(int projectCount, DbContext context, CancellationToken cancellationToken)
+        {
+            string templateProjectName = "Проект {0}";
+            string templateProjectDescription = "Описание проета {0}";
+
+            for (int i = 1; i <= projectCount; i++)
             {
-                await AddProject(project, context, cancellationToken);
+                string projectName = string.Format(templateProjectName, i.ToString());
+                string projectDescription = string.Format(templateProjectDescription, i.ToString());
+
+                Project project = new() { Name = projectName, Description = projectDescription };
+                context.Set<Project>().Add(project);
             }
+
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        private static async Task AddProject((string name, string description) project, DbContext context, CancellationToken cancellationToken)
+        private static async Task AddTasks(int taskCountPerProject, DbContext context, CancellationToken cancellationToken)
         {
-            Project? dbProject = await context.Set<Project>().FirstOrDefaultAsync(p => p.Name == project.name, cancellationToken);
-            if (dbProject is null)
+            string templateTaskTitle = "Задача {0}-{1}";
+            string templateTaskDescription = "Описание задачи {0}-{1}";
+
+            foreach (Project project in context.Set<Project>().Local)
             {
-                context.Set<Project>().Add(new Project { Name = project.name, Description = project.description });
+                for (int indexTask = 1; indexTask <= taskCountPerProject; indexTask++)
+                {
+                    string taskTitle = string.Format(templateTaskTitle, project.Id, indexTask.ToString());
+                    string taskDescription = string.Format(templateTaskDescription, project.Id, indexTask.ToString());
+                    bool taskIsCompleted = (indexTask % 2) == 0;
+
+                    ProjectTask task = new()
+                    {
+                        Title = taskTitle,
+                        Description = taskDescription,
+                        IsCompleted = taskIsCompleted,
+                        ProjectId = project.Id
+                    };
+                    context.Set<ProjectTask>().Add(task);
+                }
             }
+
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

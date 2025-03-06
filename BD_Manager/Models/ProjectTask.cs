@@ -1,5 +1,5 @@
 ﻿namespace DB_Manager.Models;
-class ProjectTask
+public class ProjectTask
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
