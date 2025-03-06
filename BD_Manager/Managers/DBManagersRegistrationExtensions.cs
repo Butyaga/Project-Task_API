@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using API_Abstract.Managers;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
 namespace DB_Manager.Managers
 {
@@ -12,9 +13,9 @@ namespace DB_Manager.Managers
 
         public static IServiceCollection AddDBManagers(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<PgSQLContext>(opions =>
+            services.AddDbContext<PgSQLContext>(options =>
             {
-                opions.UseNpgsql(connectionString)
+                options.UseNpgsql(connectionString)
                     .UseAsyncSeeding(SeedingAsync);
             });
 
