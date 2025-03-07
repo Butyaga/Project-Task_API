@@ -63,7 +63,7 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
             IProject? project = await _projectManager.GetProjectAsync(id);
             if (project is null)
             {
-                _logger.LogInformation("проект с Id = {id} не найден", id);
+                _logger.LogInformation("Проект с Id = {id} не найден", id);
                 return NotFound(new Message($"No project found with Id {id}"));
             }
             _logger.LogInformation("Успешное запершение запроса");
