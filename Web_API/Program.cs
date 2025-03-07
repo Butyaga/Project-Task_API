@@ -1,5 +1,6 @@
 using DB_Manager.Managers;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Web_API.Models.Validators;
 
 namespace Web_API;
@@ -18,6 +19,13 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Configuration.AddJsonFile("serilogsettings.json");
+        builder.Host.UseSerilog((context, services, configuration) =>
+        {
+            //configuration.ReadFrom.Services(services);
+            configuration.ReadFrom.Configuration(context.Configuration);
+        });
 
         var app = builder.Build();
 
