@@ -12,7 +12,7 @@ namespace Web_API.Controllers;
 public class TasksController(ITaskManager _taskManager) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ITask>>> GetTasksAsync([FromQuery] bool? isCompleted, [FromQuery] int? projectId)
+    public async Task<ActionResult<IEnumerable<ITask>>> GetTasks([FromQuery] bool? isCompleted, [FromQuery] int? projectId)
     {
         if (projectId.HasValue && projectId.Value < 0)
         {
@@ -31,7 +31,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ITask>> GetTaskAsync(int id)
+    public async Task<ActionResult<ITask>> GetTask(int id)
     {
         if (id < 0)
         {
@@ -55,7 +55,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ITask>> PostTaskAsync([FromBody] TaskDTO taskDTO, IValidator<TaskDTO> validator)
+    public async Task<ActionResult<ITask>> PostTask([FromBody] TaskDTO taskDTO, [FromServices] IValidator<TaskDTO> validator)
     {
         ValidationResult validationResult = validator.Validate(taskDTO);
         if (!validationResult.IsValid)
@@ -66,7 +66,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
         try
         {
             ITask result = await _taskManager.CreateTaskAsync(taskDTO);
-            return CreatedAtAction(nameof(GetTaskAsync), result.Id, result);
+            return CreatedAtAction(nameof(GetTask), new { id = result.Id }, result);
         }
         catch (Exception)
         {
@@ -75,7 +75,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutTaskAsync(int id, [FromBody] TaskDTO taskDTO, IValidator<TaskDTO> validator)
+    public async Task<ActionResult> PutTask(int id, [FromBody] TaskDTO taskDTO, [FromServices] IValidator<TaskDTO> validator)
     {
         if (id < 0)
         {
@@ -104,7 +104,7 @@ public class TasksController(ITaskManager _taskManager) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteTaskAsync(int id)
+    public async Task<ActionResult> DeleteTask(int id)
     {
         if (id < 0)
         {

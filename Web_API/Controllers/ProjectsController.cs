@@ -12,7 +12,7 @@ namespace Web_API.Controllers;
 public class ProjectsController(IProjectManager _projectManager) : ControllerBase
 {
     [HttpGet()]
-    public async Task<ActionResult<IEnumerable<IProject>>> GetProjectsAsync([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
+    public async Task<ActionResult<IEnumerable<IProject>>> GetProjects([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
     {
         if (pageSize < 0 || page < -1)
         {
@@ -39,7 +39,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<IProject>> GetProjectAsync(int id)
+    public async Task<ActionResult<IProject>> GetProject(int id)
     {
         if (id < 1)
         {
@@ -62,7 +62,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPost]
-    public async Task<ActionResult<IProject>> PostProjectAsync([FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
+    public async Task<ActionResult<IProject>> PostProject([FromBody] ProjectDTO project, [FromServices] IValidator<ProjectDTO> validator)
     {
         ValidationResult validationResult = validator.Validate(project);
         if (!validationResult.IsValid)
@@ -73,7 +73,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
         try
         {
             IProject result = await _projectManager.CreateProjectAsync(project);
-            return CreatedAtAction(nameof(GetProjectAsync), result.Id, result);
+            return CreatedAtAction(nameof(GetProject), new { id = result.Id }, result);
         }
         catch (Exception)
         {
@@ -82,7 +82,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutProjectAsync(int id, [FromBody] ProjectDTO project, IValidator<ProjectDTO> validator)
+    public async Task<ActionResult> PutProject(int id, [FromBody] ProjectDTO project, [FromServices] IValidator<ProjectDTO> validator)
     {
         if (id < 0)
         {
@@ -111,7 +111,7 @@ public class ProjectsController(IProjectManager _projectManager) : ControllerBas
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteProjectAsync(int id)
+    public async Task<ActionResult> DeleteProject(int id)
     {
         if (id < 0)
         {
