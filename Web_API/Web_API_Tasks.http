@@ -1,0 +1,78 @@
+@Web_API_HostAddress = http://localhost:5215
+
+//Error
+GET {{Web_API_HostAddress}}/api/wrong/
+Accept: application/json
+
+###
+
+GET {{Web_API_HostAddress}}/api/tasks/
+Accept: application/json
+
+###
+
+GET {{Web_API_HostAddress}}/api/tasks?isCompleted=false&projectId=4
+Accept: application/json
+
+###
+
+// Error
+GET {{Web_API_HostAddress}}/api/tasks?isCompleted=false&projectId=-4
+Accept: application/json
+
+###
+
+GET {{Web_API_HostAddress}}/api/tasks/5
+Accept: application/json
+
+###
+
+POST {{Web_API_HostAddress}}/api/tasks
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Новая задача",
+  "description": "Описание новой задачи",
+  "isCompleted": false,
+  "projectId": 4
+}
+
+###
+
+//Error
+PUT {{Web_API_HostAddress}}/api/tasks/140
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Измененная задача",
+  "description": "Описание измененной задачи",
+  "isCompleted": false,
+  "projectId": 4
+}
+
+###
+
+PUT {{Web_API_HostAddress}}/api/tasks/5
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Измененная задача",
+  "description": "Описание измененной задачи",
+  "isCompleted": false,
+  "projectId": 4
+}
+###
+
+//Error
+DELETE {{Web_API_HostAddress}}/api/tasks/400
+Accept: application/json
+
+###
+
+DELETE {{Web_API_HostAddress}}/api/tasks/5
+Accept: application/json
+
+###

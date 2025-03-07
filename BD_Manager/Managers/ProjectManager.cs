@@ -42,7 +42,7 @@ public class ProjectManager(PgSQLContext _context) : IProjectManager
     public async Task<IEnumerable<IProject>> GetPagedProjectsAsync(int pageIndex, int pageSize)
     {
         int countSkippedItems = pageIndex * pageSize;
-        IQueryable<Project> requestedPageQuery = _context.Projects.AsNoTracking().Skip(countSkippedItems).Take(pageSize);
+        IQueryable<Project> requestedPageQuery = _context.Projects.AsNoTracking().OrderBy(p => p.Id).Skip(countSkippedItems).Take(pageSize);
         List<Project> projects = await requestedPageQuery.ToListAsync();
         IEnumerable<IProject> projectCollection = [.. from project in projects select project.MapToDTO()];
         return projectCollection;
