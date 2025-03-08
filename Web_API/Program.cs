@@ -1,6 +1,7 @@
 using DB_Manager.Managers;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Web_API.ExceptionHandler;
 using Web_API.Models.Validators;
 
 namespace Web_API;
@@ -13,6 +14,10 @@ public class Program
         // Add services to the container.
         string connectionString = GetConnectionString(builder.Configuration);
         builder.Services.AddDBManagers(connectionString);
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+
         builder.Services.AddValidators();
 
         builder.Services.AddControllers();
@@ -28,6 +33,8 @@ public class Program
         });
 
         var app = builder.Build();
+
+        app.UseExceptionHandler();
 
         await app.MigrateDatabase();
 
