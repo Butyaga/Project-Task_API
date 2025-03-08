@@ -2,8 +2,9 @@
 using API_Abstract.Managers;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
-using FluentValidation;
+using Web_API.Models.Validators;
 using FluentValidation.Results;
+
 
 namespace Web_API.Controllers;
 
@@ -69,15 +70,17 @@ public class TasksController(ITaskManager _taskManager, ILogger<ProjectsControll
     }
 
     [HttpPost]
-    public async Task<ActionResult<ITask>> PostTask([FromBody] TaskDTO taskDTO, [FromServices] IValidator<TaskDTO> validator)
+    public async Task<ActionResult<ITask>> PostTask([FromBody] TaskDTO taskDTO, [FromServices] TaskDTOValidator validator)
     {
         _logger.LogInformation("Запущен метод Post");
         _logger.LogDebug("В теле запроса предана сущность: {@taskDTO}", taskDTO);
-        ValidationResult validationResult = validator.Validate(taskDTO);
+
+        ValidationResult validationResult = await validator.ValidateAsync(taskDTO);
         if (!validationResult.IsValid)
         {
             _logger.LogInformation("Сущность TaskDTO не валидна");
-            return StatusCode(422, "TaskDTO is not valid");
+            validationResult.AddToModelState(ModelState);
+            return BadRequest(ModelState);
         }
 
         try
@@ -95,21 +98,23 @@ public class TasksController(ITaskManager _taskManager, ILogger<ProjectsControll
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutTask(int id, [FromBody] TaskDTO taskDTO, [FromServices] IValidator<TaskDTO> validator)
+    public async Task<ActionResult> PutTask(int id, [FromBody] TaskDTO taskDTO, [FromServices] TaskDTOValidator validator)
     {
         _logger.LogInformation("Запущен метод Put");
         _logger.LogDebug("В запрос преданы: id = {id}, TaskDTO = {@taskDTO}", id, taskDTO);
+
         if (id < 0)
         {
             _logger.LogInformation("Значения параметра id неприемлемо");
             return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        ValidationResult validationResult = validator.Validate(taskDTO);
+        ValidationResult validationResult = await validator.ValidateAsync(taskDTO);
         if (!validationResult.IsValid)
         {
-            _logger.LogInformation("Сущность ProjectDTO не валидна");
-            return StatusCode(422, "TaskDTO is not valid");
+            _logger.LogInformation("Сущность TaskDTO не валидна");
+            validationResult.AddToModelState(ModelState);
+            return BadRequest(ModelState);
         }
 
         try
