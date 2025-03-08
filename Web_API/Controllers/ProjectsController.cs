@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
 using Web_API.Models.Validators;
 using FluentValidation.Results;
+using FluentValidation;
 
 namespace Web_API.Controllers;
 
@@ -78,7 +79,7 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
     }
 
     [HttpPost]
-    public async Task<ActionResult<IProject>> PostProject([FromBody] ProjectDTO project, [FromServices] ProjectDTOValidator validator)
+    public async Task<ActionResult<IProject>> PostProject([FromBody] ProjectDTO project, [FromServices] IValidator<ProjectDTO> validator)
     {
         _logger.LogInformation("Запущен метод Post");
         _logger.LogDebug("В теле запроса предана сущность: {@project}", project);
@@ -106,7 +107,7 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutProject(int id, [FromBody] ProjectDTO project, [FromServices] ProjectDTOValidator validator)
+    public async Task<ActionResult> PutProject(int id, [FromBody] ProjectDTO project, [FromServices] IValidator<ProjectDTO> validator)
     {
         _logger.LogInformation("Запущен метод Put");
         _logger.LogDebug("В запрос преданы: id = {id}, ProjectDTO = {@project}", id, project);
