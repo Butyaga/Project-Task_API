@@ -1,0 +1,73 @@
+@Web_API_HostAddress = http://localhost:5215
+
+//Error
+GET {{Web_API_HostAddress}}/api/wrong/
+Accept: application/json
+
+###
+
+GET {{Web_API_HostAddress}}/api/projects/
+Accept: application/json
+
+###
+
+GET {{Web_API_HostAddress}}/api/projects?page=1&pageSize=5
+Accept: application/json
+
+###
+
+// Error
+GET {{Web_API_HostAddress}}/api/projects?page=0&pageSize=-5
+Accept: application/json
+
+###
+
+GET {{Web_API_HostAddress}}/api/projects/3
+Accept: application/json
+
+###
+
+POST {{Web_API_HostAddress}}/api/projects
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Новый проект",
+  "description": "Описание нового проекта"
+}
+
+###
+
+//Error
+PUT {{Web_API_HostAddress}}/api/projects/40
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Измененный проект",
+  "description": "Описание измененного проекта"
+}
+
+###
+
+PUT {{Web_API_HostAddress}}/api/projects/7
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Измененный проект",
+  "description": "Описание измененного проекта"
+}
+
+###
+
+//Error
+DELETE {{Web_API_HostAddress}}/api/projects/40
+Accept: application/json
+
+###
+
+DELETE {{Web_API_HostAddress}}/api/projects/7
+Accept: application/json
+
+###
