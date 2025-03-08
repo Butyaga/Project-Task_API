@@ -1,8 +1,9 @@
-using DB_Manager.Managers;
 using Microsoft.EntityFrameworkCore;
+using DB_Manager.Managers;
 using Serilog;
 using Web_API.ExceptionHandler;
-using Web_API.Models.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Web_API;
 public class Program
@@ -18,7 +19,7 @@ public class Program
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
 
-        builder.Services.AddValidators();
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Scoped);
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

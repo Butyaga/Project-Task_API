@@ -2,8 +2,9 @@
 using API_Abstract.Managers;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Models;
-using FluentValidation;
+using Web_API.Models.Validators;
 using FluentValidation.Results;
+using FluentValidation;
 
 namespace Web_API.Controllers;
 
@@ -83,11 +84,12 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
         _logger.LogInformation("Запущен метод Post");
         _logger.LogDebug("В теле запроса предана сущность: {@project}", project);
 
-        ValidationResult validationResult = validator.Validate(project);
+        ValidationResult validationResult = await validator.ValidateAsync(project);
         if (!validationResult.IsValid)
         {
             _logger.LogInformation("Сущность ProjectDTO не валидна");
-            return StatusCode(422, "ProjectDTO is not valid");
+            validationResult.AddToModelState(ModelState);
+            return BadRequest(ModelState);
         }
 
         try
@@ -116,11 +118,12 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
             return BadRequest(new Message("Wrong parameter values: id"));
         }
 
-        ValidationResult validationResult = validator.Validate(project);
+        ValidationResult validationResult = await validator.ValidateAsync(project);
         if (!validationResult.IsValid)
         {
             _logger.LogInformation("Сущность ProjectDTO не валидна");
-            return StatusCode(422, "ProjectDTO is not valid");
+            validationResult.AddToModelState(ModelState);
+            return BadRequest(ModelState);
         }
 
         try
