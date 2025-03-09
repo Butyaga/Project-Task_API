@@ -17,7 +17,7 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
     {
         _logger.LogInformation("Запущен метод Get");
         _logger.LogDebug("Параметры в запроме метода: page = {page}, pageSize = {pageSize}", page, pageSize);
-        if (pageSize < 0 || page < -1)
+        if (pageSize < 0 || page < 0)
         {
             _logger.LogInformation("Значения параметров неприемлемые");
             return BadRequest(new Message("Wrong parameter values: page, pageSize"));
@@ -112,7 +112,7 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
         _logger.LogInformation("Запущен метод Put");
         _logger.LogDebug("В запрос преданы: id = {id}, ProjectDTO = {@project}", id, project);
 
-        if (id < 0)
+        if (id < 1)
         {
             _logger.LogInformation("Значения параметра id неприемлемо");
             return BadRequest(new Message("Wrong parameter values: id"));
@@ -151,7 +151,7 @@ public class ProjectsController(IProjectManager _projectManager, ILogger<Project
         _logger.LogInformation("Запущен метод Delete");
         _logger.LogDebug("В запрос преданы: id = {id}", id);
 
-        if (id < 0)
+        if (id < 1)
         {
             _logger.LogInformation("Значения параметра id неприемлемо");
             return BadRequest(new Message("Wrong parameter values: id"));
