@@ -309,8 +309,8 @@ namespace Web_API.Tests
                 new() { Id = 3, Name = "Test project 3", Description = "Description project 3", CreatedAt = DateTime.Now, Tasks = [] },
             };
 
-        private static IProject OneProject =>
-            new ProjectDTO { Id = 4, Name = "Test project 4", Description = "Description project 4", CreatedAt = DateTime.Now, Tasks = [] };
+        private static ProjectDTO OneProject =>
+            new() { Id = 4, Name = "Test project 4", Description = "Description project 4", CreatedAt = DateTime.Now, Tasks = [] };
 
         private static Models.ProjectDTO OneProjectDTO => new() { name = "Test project 5", description = "Description project 5"};
 
