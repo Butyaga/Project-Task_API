@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="CacheControl\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\API_Abstract\API_Abstract.csproj" />
   </ItemGroup>
 
