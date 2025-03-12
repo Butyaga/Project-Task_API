@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\API_Abstract\API_Abstract.csproj" />
     <ProjectReference Include="..\BD_Manager\DB_Manager.csproj" />
+    <ProjectReference Include="..\CacheRedis\CacheRedis.csproj" />
   </ItemGroup>
 
 </Project>
