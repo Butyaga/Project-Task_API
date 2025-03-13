@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB_Manager", "BD_Manager\DB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web_API.Tests", "Web_API.Tests\Web_API.Tests.csproj", "{B7AE177F-34E9-4F4D-93D3-A9BB8F9CEA98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheRedis", "CacheRedis\CacheRedis.csproj", "{9FCFF860-6A1D-4588-9698-BC0EBC2A8AA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B7AE177F-34E9-4F4D-93D3-A9BB8F9CEA98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7AE177F-34E9-4F4D-93D3-A9BB8F9CEA98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7AE177F-34E9-4F4D-93D3-A9BB8F9CEA98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FCFF860-6A1D-4588-9698-BC0EBC2A8AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FCFF860-6A1D-4588-9698-BC0EBC2A8AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FCFF860-6A1D-4588-9698-BC0EBC2A8AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FCFF860-6A1D-4588-9698-BC0EBC2A8AA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

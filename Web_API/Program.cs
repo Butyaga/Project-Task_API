@@ -3,7 +3,7 @@ using DB_Manager.Managers;
 using Serilog;
 using Web_API.ExceptionHandler;
 using FluentValidation;
-using FluentValidation.AspNetCore;
+using CacheRedis;
 
 namespace Web_API;
 public class Program
@@ -15,6 +15,9 @@ public class Program
         // Add services to the container.
         string connectionString = GetConnectionString(builder.Configuration);
         builder.Services.AddDBManagers(connectionString);
+
+        string? redisConfiguration = builder.Configuration.GetConnectionString("RedisConnection");
+        builder.Services.AddRedisCaching(redisConfiguration);
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();

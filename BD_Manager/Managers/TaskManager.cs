@@ -20,11 +20,7 @@ public class TaskManager(PgSQLContext _context) : ITaskManager
         };
 
         await _context.ProjectTasks.AddAsync(newTask);
-        int result = await _context.SaveChangesAsync();
-        if (result == 0)
-        {
-            throw new Exception("Task creation error in DB");
-        }
+        await _context.SaveChangesAsync();
         return newTask.MapToDTO();
     }
 
@@ -38,11 +34,7 @@ public class TaskManager(PgSQLContext _context) : ITaskManager
         }
 
         _context.ProjectTasks.Remove(task);
-        int result = await _context.SaveChangesAsync();
-        if (result == 0)
-        {
-            throw new Exception("Task creation error in DB");
-        }
+        await _context.SaveChangesAsync();
         return true;
     }
 
@@ -79,11 +71,7 @@ public class TaskManager(PgSQLContext _context) : ITaskManager
         task.IsCompleted = taskDTO.isCompleted;
         task.ProjectId = taskDTO.projectId;
 
-        int result = await _context.SaveChangesAsync();
-        if (result == 0)
-        {
-            throw new Exception("Task update error in DB");
-        }
+        await _context.SaveChangesAsync();
         return true;
     }
 

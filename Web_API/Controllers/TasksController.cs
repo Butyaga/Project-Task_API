@@ -5,14 +5,17 @@ using Web_API.Models;
 using Web_API.Models.Validators;
 using FluentValidation.Results;
 using FluentValidation;
+using CacheRedis.AbstractRealisation;
 
 
 namespace Web_API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TasksController(ITaskManager _taskManager, ILogger<TasksController> _logger) : ControllerBase
+public class TasksController(ITaskManagerProxy taskManagerProxy, ILogger<TasksController> _logger) : ControllerBase
 {
+    private readonly ITaskManager _taskManager = taskManagerProxy;
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ITask>>> GetTasks([FromQuery] bool? isCompleted, [FromQuery] int? projectId)
     {

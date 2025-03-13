@@ -22,7 +22,7 @@ Accept: application/json
 
 ###
 
-GET {{Web_API_HostAddress}}/api/tasks/5
+GET {{Web_API_HostAddress}}/api/tasks/1
 Accept: application/json
 
 ###
@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{Web_API_HostAddress}}/api/tasks/5
+PUT {{Web_API_HostAddress}}/api/tasks/6
 Accept: application/json
 Content-Type: application/json
 
