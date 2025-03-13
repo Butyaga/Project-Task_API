@@ -13,6 +13,7 @@ public static class RedisCachingRegistrationExtensions
         }
         services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(configuration));
         services.AddScoped<IProjectManagerProxy, ProjectManagerProxy>();
+        services.AddScoped<ITaskManagerProxy, TaskManagerProxy>();
         return services;
     }
 }

@@ -3,16 +3,10 @@ using API_Abstract.Managers;
 using API_Abstract.POCO;
 using CacheRedis.CacheControl;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CacheRedis.AbstractRealisation;
-public class ProjectManagerProxy(IProjectManager projectManager, IConnectionMultiplexer redisConnection) : IProjectManagerProxy
+public class ProjectManagerProxy(IProjectManager _projectManager, IConnectionMultiplexer redisConnection) : IProjectManagerProxy
 {
-    private readonly IProjectManager _projectManager = projectManager;
     private readonly ProjectCacheHelper _projectCacheHelper = new(redisConnection);
 
     public async Task<IProject> CreateProjectAsync(IProjectDTO projectDTO)

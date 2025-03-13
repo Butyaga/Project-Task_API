@@ -18,7 +18,7 @@ public abstract class RedisBase<T>
         string className = typeof(T).Name;
         _collectionSearchPattern = _collectionSearchPattern.Replace(_className, className);
         _templateInstance = _templateInstance.Replace(_className, className);
-        _templateCollection = _templateCollection.Replace(_identity, className);
+        _templateCollection = _templateCollection.Replace(_className, className);
         _redisConnection = redisConnection;
         _redisDB = redisConnection.GetDatabase();
     }
