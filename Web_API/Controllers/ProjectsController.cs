@@ -5,13 +5,16 @@ using Web_API.Models;
 using Web_API.Models.Validators;
 using FluentValidation.Results;
 using FluentValidation;
+using CacheRedis.AbstractRealisation;
 
 namespace Web_API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectsController(IProjectManager _projectManager, ILogger<ProjectsController> _logger) : ControllerBase
+public class ProjectsController(IProjectManagerProxy projectManagerProxy, ILogger<ProjectsController> _logger) : ControllerBase
 {
+    private readonly IProjectManager _projectManager = projectManagerProxy;
+
     [HttpGet()]
     public async Task<ActionResult<IEnumerable<IProject>>> GetProjects([FromQuery] int page = 0, [FromQuery] int pageSize = 0)
     {

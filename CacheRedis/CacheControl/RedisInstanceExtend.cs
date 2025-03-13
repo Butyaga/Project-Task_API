@@ -1,7 +1,7 @@
 ﻿using StackExchange.Redis;
 
 namespace CacheRedis.CacheControl;
-abstract class RedisInstanceExtend<T>(IConnectionMultiplexer redisConnection) : RedisBase<T>(redisConnection)
+public abstract class RedisInstanceExtend<T>(IConnectionMultiplexer redisConnection) : RedisBase<T>(redisConnection)
 {
     private static Func<T, string> _getInstanceIdentity =
         inst => throw new InvalidOperationException($"Используй метод {nameof(SetInstanceIdentity)}");
@@ -22,7 +22,7 @@ abstract class RedisInstanceExtend<T>(IConnectionMultiplexer redisConnection) : 
             return default;
         }
 
-        return await GetInstance(stringIdentity);
+        return await base.GetInstance(stringIdentity);
     }
 
     public async Task RemoveInstance<Tident>(Tident identity)
@@ -33,6 +33,6 @@ abstract class RedisInstanceExtend<T>(IConnectionMultiplexer redisConnection) : 
             return;
         }
 
-        await RemoveInstance(stringIdentity);
+        await base.RemoveInstance(stringIdentity);
     }
 }

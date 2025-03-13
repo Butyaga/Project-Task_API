@@ -2,7 +2,7 @@
 using System.Text.Json;
 
 namespace CacheRedis.CacheControl;
-abstract class RedisBase<T>
+public abstract class RedisBase<T>
 {
     #region Template
     const string _className = "{className}";
@@ -27,6 +27,8 @@ abstract class RedisBase<T>
     private readonly IDatabase _redisDB;
     private readonly TimeSpan _expiry = TimeSpan.FromMinutes(5);
 
+    private JsonSerializerOptions? _jsonDeserializationOptions;
+
     #region Public interface
     public async Task SetInstance(T instance, string identity)
     {
@@ -49,7 +51,7 @@ abstract class RedisBase<T>
             return default;
         }
 
-        return JsonSerializer.Deserialize<T>(data);
+        return JsonSerializer.Deserialize<T>(data, _jsonDeserializationOptions);
     }
 
     public async Task RemoveInstance(string identity)
@@ -80,7 +82,7 @@ abstract class RedisBase<T>
             return null;
         }
 
-        return JsonSerializer.Deserialize<IEnumerable<T>>(data);
+        return JsonSerializer.Deserialize<IEnumerable<T>>(data, _jsonDeserializationOptions);
     }
 
     public async Task RemoveCollection(string identity)
@@ -88,12 +90,16 @@ abstract class RedisBase<T>
         string fullIdentity = GetFullCollectionIdentity(identity);
         await _redisDB.KeyDeleteAsync(fullIdentity);
     }
+
+    public void AddJsonDeserializationOptions(JsonSerializerOptions options)
+    {
+        _jsonDeserializationOptions = options;
+    }
     #endregion
 
     #region Private methods
     private string GetFullInstanceIdentity(string identity)
     {
-        //string instanceIdentity = _getInstanceIdentity(instance);
         return _templateInstance.Replace(_identity, identity);
     }
 
