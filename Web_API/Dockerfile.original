@@ -13,9 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Web_API/Web_API.csproj", "Web_API/"]
-COPY ["API_Abstract/API_Abstract.csproj", "API_Abstract/"]
-COPY ["BD_Manager/DB_Manager.csproj", "BD_Manager/"]
-COPY ["CacheRedis/CacheRedis.csproj", "CacheRedis/"]
 RUN dotnet restore "./Web_API/Web_API.csproj"
 COPY . .
 WORKDIR "/src/Web_API"

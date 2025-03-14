@@ -13,11 +13,7 @@ public class ProjectManager(PgSQLContext _context) : IProjectManager
     {
         Project newProject = new() { Name = projectDTO.name, Description = projectDTO.description };
         await _context.Projects.AddAsync(newProject);
-        int result = await _context.SaveChangesAsync();
-        if (result == 0)
-        {
-            throw new Exception("Project creation error in DB");
-        }
+        await _context.SaveChangesAsync();
         return newProject.MapToDTO();
     }
 
@@ -31,11 +27,7 @@ public class ProjectManager(PgSQLContext _context) : IProjectManager
         }
 
         _context.Projects.Remove(project);
-        int result = await _context.SaveChangesAsync();
-        if (result == 0)
-        {
-            throw new Exception("Project creation error in DB");
-        }
+        await _context.SaveChangesAsync();
         return true;
     }
 
@@ -78,11 +70,7 @@ public class ProjectManager(PgSQLContext _context) : IProjectManager
         project.Name = projectDTO.name;
         project.Description = projectDTO.description;
 
-        int result = await _context.SaveChangesAsync();
-        if (result == 0)
-        {
-            throw new Exception("Project update error in DB");
-        }
+        await _context.SaveChangesAsync();
         return true;
     }
 }

@@ -5,20 +5,23 @@ using Web_API.Models;
 using Web_API.Models.Validators;
 using FluentValidation.Results;
 using FluentValidation;
+using CacheRedis.AbstractRealisation;
 
 
 namespace Web_API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TasksController(ITaskManager _taskManager, ILogger<ProjectsController> _logger) : ControllerBase
+public class TasksController(ITaskManagerProxy taskManagerProxy, ILogger<TasksController> _logger) : ControllerBase
 {
+    private readonly ITaskManager _taskManager = taskManagerProxy;
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ITask>>> GetTasks([FromQuery] bool? isCompleted, [FromQuery] int? projectId)
     {
         _logger.LogInformation("Запущен метод Get");
         _logger.LogDebug("Параметры в запроме метода: isCompleted = {isCompleted}, projectId = {projectId}", isCompleted, projectId);
-        if (projectId.HasValue && projectId.Value < 0)
+        if (projectId.HasValue && projectId.Value < 1)
         {
             _logger.LogInformation("Значения параметров неприемлемые");
             return BadRequest(new Message("Wrong parameter values: projectId"));
@@ -44,7 +47,7 @@ public class TasksController(ITaskManager _taskManager, ILogger<ProjectsControll
     {
         _logger.LogInformation("Запущен метод Get");
         _logger.LogDebug("Параметры в запроме метода: id = {id}", id);
-        if (id < 0)
+        if (id < 1)
         {
             _logger.LogInformation("Значения параметров неприемлемые");
             return BadRequest(new Message("Wrong parameter values: id"));
@@ -104,7 +107,7 @@ public class TasksController(ITaskManager _taskManager, ILogger<ProjectsControll
         _logger.LogInformation("Запущен метод Put");
         _logger.LogDebug("В запрос преданы: id = {id}, TaskDTO = {@taskDTO}", id, taskDTO);
 
-        if (id < 0)
+        if (id < 1)
         {
             _logger.LogInformation("Значения параметра id неприемлемо");
             return BadRequest(new Message("Wrong parameter values: id"));
@@ -142,7 +145,7 @@ public class TasksController(ITaskManager _taskManager, ILogger<ProjectsControll
     {
         _logger.LogInformation("Запущен метод Delete");
         _logger.LogDebug("В запрос преданы: id = {id}", id);
-        if (id < 0)
+        if (id < 1)
         {
             _logger.LogInformation("Значения параметра id неприемлемо");
             return BadRequest(new Message("Wrong parameter values: id"));

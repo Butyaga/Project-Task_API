@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>1ddd9f80-d141-45b4-b80c-bdb88e335153</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\API_Abstract\API_Abstract.csproj" />
     <ProjectReference Include="..\BD_Manager\DB_Manager.csproj" />
+    <ProjectReference Include="..\CacheRedis\CacheRedis.csproj" />
   </ItemGroup>
 
 </Project>
