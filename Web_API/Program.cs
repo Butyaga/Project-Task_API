@@ -13,8 +13,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        string connectionString = GetConnectionString(builder.Configuration);
-        builder.Services.AddDBManagers(connectionString);
+        string pgSqlConfiguration = builder.Configuration.GetConnectionString("PgSQLConnection") ?? "";
+        builder.Services.AddDBManagers(pgSqlConfiguration);
 
         string? redisConfiguration = builder.Configuration.GetConnectionString("RedisConnection");
         builder.Services.AddRedisCaching(redisConfiguration);
@@ -32,7 +32,7 @@ public class Program
         builder.Configuration.AddJsonFile("serilogsettings.json");
         builder.Host.UseSerilog((context, services, configuration) =>
         {
-            //configuration.ReadFrom.Services(services);
+            configuration.ReadFrom.Services(services);
             configuration.ReadFrom.Configuration(context.Configuration);
         });
 
@@ -49,7 +49,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        app.UseHttpsRedirection().UseHsts();
 
         app.UseAuthorization();
 
@@ -57,13 +57,5 @@ public class Program
         app.MapControllers();
 
         app.Run();
-    }
-
-    private static string GetConnectionString(ConfigurationManager configuration)
-    {
-        string? result = configuration["PGSQLCONNECTIONSTRING"];
-        result ??= configuration.GetConnectionString("PgSQLConnection");
-        result ??= "Host=localhost;Port=5433;Database=usersdb;Username=postgres;Password=qwe";
-        return result;
     }
 }

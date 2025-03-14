@@ -1,0 +1,38 @@
+name: project-task_api
+
+services:
+  web_api:
+    image: ${DOCKER_REGISTRY-}webapi
+    container_name: webapi1
+    build:
+      context: .
+      dockerfile: Web_API/Dockerfile
+    depends_on:
+      db_postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db_postgres:
+    image: postgres
+    container_name: webapi_postgres
+    restart: always
+    user: postgres
+    volumes:
+      - ./BD_Manager/bin/pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis
+    container_name: webapi_redis
+    restart: always
+    ports:
+        - 6379:6379
